@@ -15,6 +15,17 @@ public class DataBaseUtil
         }
         return-1;
     }
+    static boolean findAdmin(ArrayList<User> dataBase)
+    {
+        for (User user : dataBase)
+        {
+            if (user.isAdmin())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     static String enterPaswd ()
     {
         Scanner scan=new Scanner(System.in);
