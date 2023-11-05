@@ -5,165 +5,160 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Server {
-    static Scanner scan = new Scanner(System.in);                                   //TODO: reg/log logic , file
+    Server() {
+        menu();
+    }
+
+    static Scanner scan = new Scanner(System.in);
     ArrayList<User> dataBase = new ArrayList<>();
 
-    private void registration(ArrayList<User> dataBase) {
+    private String email() {
+        System.out.println("introduce your email");
+        String email = scan.nextLine();
+        if (email.matches("\\S{2,}[@]\\S{2,}[.]\\S{2,3}")) {
+            return email;
+        } else {
+            return email();
+        }
+    }
+
+    private String birthDate() {
+        System.out.println("enter your birth date\n must be in this format: xx/xx/xxxx");
+        String birthdate = scan.nextLine();
+        if (birthdate.matches("\\d{2}[/]\\d{2}[/]\\d{4}")) {
+            return birthdate;
+        } else {
+            return birthDate();
+        }
+    }
+
+    private String phoneNumber() {
+        System.out.println("introduce your phone number\n must be in this format: xxx-xxx-xxx");
+        String phonenumber = scan.nextLine();
+        if (phonenumber.matches("\\d{3}[-]\\d{3}[-]\\d{3}")) {
+            return phonenumber;
+        } else {
+            return phoneNumber();
+        }
+    }
+
+    private void registration() {
         String userName;
         String password;
-        String email;
-        String birthdate;
-        String phoneNumber;
         boolean isAdmin = false;
         boolean isModerator = false;
         System.out.println("enter your user name");
         userName = scan.nextLine();
         if (DataBaseUtil.findUser(dataBase, userName) == -1) {
             password = DataBaseUtil.enterPaswd();
-            System.out.println("introduce your email");
-            email = scan.nextLine();
-            if (email.matches("\\S{2,}[@]\\S{2,}[.]\\S{2,3}")) {
-                System.out.println("enter your birth date\n must be in this format: xx/xx/xxxx");
-                birthdate = scan.nextLine();
-                if (birthdate.matches("\\d{2}[/]\\d{2}[/]\\d{4}")) {
-                    System.out.println("introduce your phone number\n must be in this format: xxx-xxx-xxx");
-                    phoneNumber = scan.nextLine();
-                    if (phoneNumber.matches("\\d{3}[-]\\d{3}[-]\\d{3}")) {
-                        if (!DataBaseUtil.findAdmin(dataBase)) {
-                            System.out.println("do you want to register as Admin?  Y/N");
-                            String answ = scan.nextLine();
-                            if (answ.equals("y")) {
-                                isAdmin = true;
-                                System.out.println("User " + userName + " was registered as Admin");
-                            } else if ("n".equals(answ)) {
-                                System.out.println("User " + userName + " was registered");
-                            } else {
-                                System.out.println("input error");
-                            }
-                        } else {
-                            if (!DataBaseUtil.findAdmin(dataBase)) {
-                                System.out.println("do you want to register as Moderator?  Y/N");
-                                String answ = scan.nextLine();
-                                if (answ.equals("y")) {
-                                    System.out.println("introduce Admins user");
-                                    String aUser = scan.nextLine();
-                                    int aIndex = DataBaseUtil.findUser(dataBase, aUser);
-                                    if (dataBase.get(aIndex).isAdmin()) {
-                                        if (dataBase.get(aIndex).equals(aUser)) {
-                                            System.out.println("introduce Admins password");
-                                            String aPassword = scan.nextLine();
-                                            if (aPassword.equals(dataBase.get(aIndex).getPassword())) {
-                                                isModerator = true;
-                                                System.out.println("User " + userName + " was registered as Moderator");
-                                            }
-                                        } else {
-                                            System.out.println("introduced user isn't Admins user");
-                                            System.out.println("User " + userName + " was registered");
-                                        }
-                                    } else {
-                                        System.out.println("User isn't admin");
-                                        System.out.println("User " + userName + " was registered");
-                                    }
-                                } else if ("n".equals(answ)) {
-                                    System.out.println("User " + userName + " was registered");
-                                } else {
-                                    System.out.println("input error");
-                                }
-                            }
-                        }
-                        User user = new User(userName, password, isAdmin, isModerator, email, birthdate, phoneNumber);
-                        dataBase.add(user);
-                    } else {
-                        System.out.println("phone number not valid");
-                    }
+            String email = email();
+            String birthdate = birthDate();
+            String phoneNumber = phoneNumber();
+            if (!DataBaseUtil.findAdmin(dataBase)) {
+                System.out.println("do you want to register as Admin?  Y/N");
+                String answ = scan.nextLine();
+                if (answ.equals("y")) {
+                    isAdmin = true;
+                    System.out.println("User " + userName + " was registered as Admin");
+                } else if ("n".equals(answ)) {
+                    System.out.println("User " + userName + " was registered");
                 } else {
-                    System.out.println("birthdate not valid");
+                    System.out.println("input error");
                 }
             } else {
-                System.out.println("email not valid");
+                if (!DataBaseUtil.findAdmin(dataBase)) {
+                    System.out.println("do you want to register as Moderator?  Y/N");
+                    String answ = scan.nextLine();
+                    if (answ.equals("y")) {
+                        System.out.println("introduce Admins user");
+                        String aUser = scan.nextLine();
+                        int aIndex = DataBaseUtil.findUser(dataBase, aUser);
+                        if (dataBase.get(aIndex).isAdmin()) {
+                            if (dataBase.get(aIndex).equals(aUser)) {
+                                System.out.println("introduce Admins password");
+                                String aPassword = scan.nextLine();
+                                if (aPassword.equals(dataBase.get(aIndex).getPassword())) {
+                                    isModerator = true;
+                                    System.out.println("User " + userName + " was registered as Moderator");
+                                }
+                            } else {
+                                System.out.println("introduced user isn't Admins user");
+                                System.out.println("User " + userName + " was registered");
+                            }
+                        } else {
+                            System.out.println("User isn't admin");
+                            System.out.println("User " + userName + " was registered");
+                        }
+                    } else if ("n".equals(answ)) {
+                        System.out.println("User " + userName + " was registered");
+                    } else {
+                        System.out.println("input error");
+                    }
+                }
             }
+            User user = new User(userName, password, isAdmin, isModerator, email, birthdate, phoneNumber);
+            dataBase.add(user);
         } else {
             System.out.println("user is already registered");
-            logIn(dataBase, userName);
+            logIn(userName);
         }
     }
 
-    private void registration(ArrayList<User> dataBase, String userName) {
+    private void registration(String userName) {
         String password;
-        String email;
-        String birthdate;
-        String phoneNumber;
         boolean isAdmin = false;
         boolean isModerator = false;
-        String choice = scan.nextLine();
-        if (choice.equals("y")) {
-            password = DataBaseUtil.enterPaswd();
-            System.out.println("introduce your email");
-            email = scan.nextLine();
-            if (email.matches("\\S{2,}[@]\\S{2,}[.]\\S{2,3}")) {
-                System.out.println("enter your birth date\n must be in this format: xx/xx/xxxx");
-                birthdate = scan.nextLine();
-                if (birthdate.matches("\\d{2}[/]\\d{2}[/]\\d{4}")) {
-                    System.out.println("introduce your phone number\n must be in this format: xxx-xxx-xxx");
-                    phoneNumber = scan.nextLine();
-                    if (phoneNumber.matches("\\d{3}[-]\\d{3}[-]\\d{3}")) {
-                        if (!DataBaseUtil.findAdmin(dataBase)) {
-                            System.out.println("do you want to register as Admin?  Y/N");
-                            String answ = scan.nextLine();
-                            if (answ.equals("y")) {
-                                isAdmin = true;
-                                System.out.println("User " + userName + " was registered as Admin");
-                            } else if ("n".equals(answ)) {
-                                System.out.println("User " + userName + " was registered");
-                            } else {
-                                System.out.println("input error");
+        password = DataBaseUtil.enterPaswd();
+        String email = email();
+        String birthdate = birthDate();
+        String phoneNumber = phoneNumber();
+        if (!DataBaseUtil.findAdmin(dataBase)) {
+            System.out.println("do you want to register as Admin?  Y/N");
+            String answ = scan.nextLine();
+            if (answ.equals("y")) {
+                isAdmin = true;
+                System.out.println("User " + userName + " was registered as Admin");
+            } else if ("n".equals(answ)) {
+                System.out.println("User " + userName + " was registered");
+            } else {
+                System.out.println("input error");
+            }
+        } else {
+            if (!DataBaseUtil.findAdmin(dataBase)) {
+                System.out.println("do you want to register as Moderator?  Y/N");
+                String answ = scan.nextLine();
+                if (answ.equals("y")) {
+                    System.out.println("introduce Admins user");
+                    String aUser = scan.nextLine();
+                    int aIndex = DataBaseUtil.findUser(dataBase, aUser);
+                    if (dataBase.get(aIndex).isAdmin()) {
+                        if (dataBase.get(aIndex).equals(aUser)) {
+                            System.out.println("introduce Admins password");
+                            String aPassword = scan.nextLine();
+                            if (aPassword.equals(dataBase.get(aIndex).getPassword())) {
+                                isModerator = true;
+                                System.out.println("User " + userName + " was registered as Moderator");
                             }
                         } else {
-                            if (!DataBaseUtil.findAdmin(dataBase)) {
-                                System.out.println("do you want to register as Moderator?  Y/N");
-                                String answ = scan.nextLine();
-                                if (answ.equals("y")) {
-                                    System.out.println("introduce Admins user");
-                                    String aUser = scan.nextLine();
-                                    int aIndex = DataBaseUtil.findUser(dataBase, aUser);
-                                    if (dataBase.get(aIndex).isAdmin()) {
-                                        if (dataBase.get(aIndex).equals(aUser)) {
-                                            System.out.println("introduce Admins password");
-                                            String aPassword = scan.nextLine();
-                                            if (aPassword.equals(dataBase.get(aIndex).getPassword())) {
-                                                isModerator = true;
-                                                System.out.println("User " + userName + " was registered as Moderator");
-                                            }
-                                        } else {
-                                            System.out.println("introduced user isn't Admins user");
-                                            System.out.println("User " + userName + " was registered");
-                                        }
-                                    } else {
-                                        System.out.println("User isn't admin");
-                                        System.out.println("User " + userName + " was registered");
-                                    }
-                                } else if ("n".equals(answ)) {
-                                    System.out.println("User " + userName + " was registered");
-                                } else {
-                                    System.out.println("input error");
-                                }
-                            }
+                            System.out.println("introduced user isn't Admins user");
+                            System.out.println("User " + userName + " was registered");
                         }
-                        User user = new User(userName, password, isAdmin, isModerator, email, birthdate, phoneNumber);
-                        dataBase.add(user);
                     } else {
-                        System.out.println("phone number not valid");
+                        System.out.println("User isn't admin");
+                        System.out.println("User " + userName + " was registered");
                     }
+                } else if ("n".equals(answ)) {
+                    System.out.println("User " + userName + " was registered");
                 } else {
-                    System.out.println("birthdate not valid");
+                    System.out.println("input error");
                 }
-            } else {
-                System.out.println("email not valid");
             }
         }
+        User user = new User(userName, password, isAdmin, isModerator, email, birthdate, phoneNumber);
+        dataBase.add(user);
     }
 
-    private void logIn(ArrayList<User> dataBase) {
+    private void logIn() {
         String userName;
         String password;
         int userIndex;
@@ -180,11 +175,11 @@ public class Server {
             }
         } else {
             System.out.println("user not found, want to register " + userName + " y/n");
-            registration(dataBase, userName);
+            registration(userName);
         }
     }
 
-    private void logIn(ArrayList<User> dataBase, String userName) {
+    private void logIn(String userName) {
         String password;
         int userIndex;
         userIndex = DataBaseUtil.findUser(dataBase, userName);
@@ -197,7 +192,7 @@ public class Server {
         }
     }
 
-    private void userList(ArrayList<User> dataBase) {
+    private void userList() {
         System.out.println("want to have Admin/Moderator access?  y/n");
         String choice = scan.nextLine();
         if (choice.equals("y")) {
@@ -263,8 +258,8 @@ public class Server {
             }
         }
     }
-    private boolean shutDown(ArrayList<User> dataBase,boolean exit,File info)
-    {
+
+    private boolean shutDown(boolean exit, File info) {
         try {
             FileWriter fw = new FileWriter(info);
             FileWriter cleaner = new FileWriter(info);
@@ -282,20 +277,14 @@ public class Server {
                         fw.write(dataBase.get(i).getEmail());
                         fw.write(dataBase.get(i).getBirthDate());
                         fw.write(dataBase.get(i).getPhoneNumber());
-                        if (dataBase.get(i).isAdmin())
-                        {
+                        if (dataBase.get(i).isAdmin()) {
                             fw.write("true");
-                        }
-                        else
-                        {
+                        } else {
                             fw.write("false");
                         }
-                        if (dataBase.get(i).isModerator())
-                        {
+                        if (dataBase.get(i).isModerator()) {
                             fw.write("true");
-                        }
-                        else
-                        {
+                        } else {
                             fw.write("false");
                         }
                     }
@@ -314,19 +303,18 @@ public class Server {
         }
         return exit;
     }
-    public void menu ()
-    {
-        boolean exit =false;
-        File info=new File("database.txt");
-        ArrayList<User> database=new ArrayList<>();
-        while(!exit) {
-            System.out.println("1.REGISTRATION\n2.LOG IN\n3.SHOW USERS\n4.EXIT");
+
+    private void menu() {
+        boolean exit = false;
+        File info = new File("database.txt");
+        while (!exit) {
+            System.out.println("//    1.REGISTRATION\n//    2.LOG IN\n//  3.SHOW USERS\n//   4.EXIT");
             int check = scan.nextInt();
             switch (check) {
-                case 1 -> registration(database);
-                case 2 -> logIn(database);
-                case 3 -> userList(database);
-                case 4 -> shutDown(database, exit, info);
+                case 1 -> registration();
+                case 2 -> logIn();
+                case 3 -> userList();
+                case 4 -> exit = shutDown(exit, info);
                 default -> System.out.println("ERROR");
             }
         }
