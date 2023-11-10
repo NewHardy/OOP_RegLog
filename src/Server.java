@@ -265,14 +265,15 @@ public class Server {
                 {
                     System.out.println("user don't exists");
                 }
-            } else if (choice.equals("n")) {
-                for (int i = 0; i < dataBase.size(); i++) {
-                    System.out.print("/ User Name: " + dataBase.get(i).getUserName());
-                    System.out.print("/ Birth Date: " + dataBase.get(i).getBirthDate());
-                }
-            } else {
-                System.out.println("INPUT ERROR");
             }
+        }
+        else if (choice.equals("n")) {
+            for (int i = 0; i < dataBase.size(); i++) {
+                System.out.print("/ User Name: " + dataBase.get(i).getUserName());
+                System.out.print("/ Birth Date: " + dataBase.get(i).getBirthDate());
+            }
+        } else {
+            System.out.println("INPUT ERROR");
         }
     }
 
