@@ -209,7 +209,9 @@ public class Server {
                 System.out.println("introduce Admins user");
                 String aUser = scan.nextLine();
                 int aIndex = DataBaseUtil.findUser(dataBase, aUser);
-                if (dataBase.get(aIndex).isAdmin()) {
+                if(aIndex!=-1)
+                {
+                    if (dataBase.get(aIndex).isAdmin()) {
                         System.out.println("introduce Admins password");
                         String aPassword = scan.nextLine();
                         if (aPassword.equals(dataBase.get(aIndex).getPassword())) {
@@ -219,12 +221,17 @@ public class Server {
                                 System.out.print("/ Email: " + dataBase.get(i).getEmail());
                                 System.out.print("/ Birth Date: " + dataBase.get(i).getBirthDate());
                                 System.out.print("/ Phone Number: " + dataBase.get(i).getPhoneNumber());
-                                System.out.println("/ Moderator: " + dataBase.get(i).isModerator());
-                                System.out.println("/ Admin: " + dataBase.get(i).isAdmin());
+                                System.out.print("/ Moderator: " + dataBase.get(i).isModerator());
+                                System.out.print("/ Admin: " + dataBase.get(i).isAdmin());
                             }
                         }
-                } else {
-                    System.out.println("User isn't admin");
+                    } else {
+                        System.out.println("User isn't admin");
+                    }
+                }
+                else
+                {
+                    System.out.println("user not found");
                 }
             } else if (choice.equals("m")) {
                 System.out.println("introduce Moderators user");
