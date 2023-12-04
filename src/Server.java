@@ -1,16 +1,12 @@
-import javax.swing.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Server {
     Server() {
-        menu();
+        mainMenu();
     }
 
     static Scanner scan = new Scanner(System.in);
-    ArrayList<User> dataBase = new ArrayList<>();
+    private ArrayList<User> dataBase = new ArrayList<>();
 
     private String email() {
         System.out.println("introduce your email");
@@ -42,7 +38,7 @@ public class Server {
         }
     }
 
-    private void registration() {
+    private void registration(boolean loggedUser) {
         String userName;
         String password;
         boolean isAdmin = false;
@@ -100,7 +96,7 @@ public class Server {
             dataBase.add(user);
         } else {
             System.out.println("user is already registered");
-            logIn(userName);
+            logIn(userName,loggedUser);
         }
     }
 
@@ -158,42 +154,42 @@ public class Server {
         dataBase.add(user);
     }
 
-    private void logIn() {
+    private void logIn(boolean loggedUser) {
         String userName;
         String password;
         int userIndex;
         System.out.println("introduce your user name");
         userName = scan.nextLine();
         userIndex = DataBaseUtil.findUser(dataBase, userName);
-        if (userIndex!=-1) {
-                System.out.println("introduce " + userName + "'s password");
-                password = scan.nextLine();
-                if (dataBase.get(userIndex).getPassword().equals(password)) {
-                    System.out.println("you are in");
-                } else {
-                    System.out.println("password incorrect");
-                }
+        if (userIndex != -1) {
+            System.out.println("introduce " + userName + "'s password");
+            password = scan.nextLine();
+            if (dataBase.get(userIndex).getPassword().equals(password)) {
+                System.out.println("your welcome "+ userName);
+                loggedUser=true;
+            } else {
+                System.out.println("password incorrect");
+            }
         } else {
             System.out.println("user not found, want to register " + userName + " y/n");
-            String choice=scan.nextLine();
+            String choice = scan.nextLine();
             if (choice.equals("y")) {
                 registration(userName);
-            }
-            else
-            {
+            } else {
                 System.out.println("operation cancelled ");
             }
         }
     }
 
-    private void logIn(String userName) {
+    private void logIn(String userName,boolean loggedUser) {
         String password;
         int userIndex;
         userIndex = DataBaseUtil.findUser(dataBase, userName);
         System.out.println("introduce " + userName + "'s password");
         password = scan.nextLine();
         if (dataBase.get(userIndex).getPassword().equals(password)) {
-            System.out.println("you are in");
+            System.out.println("your welcome "+ userName);
+            loggedUser=true;
         } else {
             System.out.println("password incorrect");
         }
@@ -209,8 +205,7 @@ public class Server {
                 System.out.println("introduce Admins user");
                 String aUser = scan.nextLine();
                 int aIndex = DataBaseUtil.findUser(dataBase, aUser);
-                if(aIndex!=-1)
-                {
+                if (aIndex != -1) {
                     if (dataBase.get(aIndex).isAdmin()) {
                         System.out.println("introduce Admins password");
                         String aPassword = scan.nextLine();
@@ -228,113 +223,106 @@ public class Server {
                     } else {
                         System.out.println("User isn't admin");
                     }
-                }
-                else
-                {
+                } else {
                     System.out.println("user not found");
                 }
             } else if (choice.equals("m")) {
                 System.out.println("introduce Moderators user");
                 String aUser = scan.nextLine();
                 int aIndex = DataBaseUtil.findUser(dataBase, aUser);
-                if (aIndex!=-1)
-                {
-                    if (dataBase.get(aIndex).isModerator()) {
-                        if (dataBase.get(aIndex).equals(aUser)) {
-                            System.out.println("introduce Moderators password");
-                            String aPassword = scan.nextLine();
-                            if (aPassword.equals(dataBase.get(aIndex).getPassword())) {
-                                for (int i = 0; i < dataBase.size(); i++) {
-                                    System.out.print("/ User Name: " + dataBase.get(i).getUserName());
-                                    System.out.print("/ Password: " + dataBase.get(i).getPassword());
-                                    System.out.print("/ Email: " + dataBase.get(i).getEmail());
-                                    System.out.print("/ Birth Date: " + dataBase.get(i).getBirthDate());
-                                    System.out.print("/ Phone Number: " + dataBase.get(i).getPhoneNumber());
-                                }
-                            } else {
-                                System.out.println("introduced user isn't Admins user");
+                if (aIndex != -1) {
+                    if (dataBase.get(aIndex).isModerator() || dataBase.get((aIndex)).isAdmin()) {
+                        System.out.println("introduce Moderators password");
+                        String aPassword = scan.nextLine();
+                        if (aPassword.equals(dataBase.get(aIndex).getPassword())) {
+                            for (int i = 0; i < dataBase.size(); i++) {
+                                System.out.print("/ User Name: " + dataBase.get(i).getUserName());
+                                System.out.print("/ Email: " + dataBase.get(i).getEmail());
+                                System.out.print("/ Birth Date: " + dataBase.get(i).getBirthDate());
+                                System.out.print("/ Phone Number: " + dataBase.get(i).getPhoneNumber());
                             }
                         } else {
-                            System.out.println("User isn't admin");
+                            System.out.println("introduced user isn't Admins user");
                         }
                     } else {
-                        System.out.println("INPUT ERROR");
+                        System.out.println("User isn't admin");
                     }
-                }
-                else
-                {
+
+                } else {
                     System.out.println("user don't exists");
                 }
+            } else {
+                System.out.println("input error");
             }
-        }
-        else if (choice.equals("n")) {
+        } else if (choice.equals("n")) {
             for (int i = 0; i < dataBase.size(); i++) {
                 System.out.print("/ User Name: " + dataBase.get(i).getUserName());
-                System.out.print("/ Birth Date: " + dataBase.get(i).getBirthDate());
             }
         } else {
             System.out.println("INPUT ERROR");
         }
     }
-
-    private boolean shutDown(boolean exit, File info) {
-        try {
-            FileWriter fw = new FileWriter(info);
-            FileWriter cleaner = new FileWriter(info);
-            String check;
-            check = JOptionPane.showInputDialog(null, "sure you want to exit?  y/n");
-            if (check.equals("y")) {
-                check = JOptionPane.showInputDialog(null, "save information?  y/n");
-                if (check.equals("y")) {
-                    JOptionPane.showMessageDialog(null, "new information saved");
-                    cleaner.write("");
-                    cleaner.close();
-                    for (int i = 0; i < dataBase.size(); i++) {
-                        fw.write(dataBase.get(i).getUserName());
-                        fw.write(dataBase.get(i).getPassword());
-                        fw.write(dataBase.get(i).getEmail());
-                        fw.write(dataBase.get(i).getBirthDate());
-                        fw.write(dataBase.get(i).getPhoneNumber());
-                        if (dataBase.get(i).isAdmin()) {
-                            fw.write("true");
-                        } else {
-                            fw.write("false");
-                        }
-                        if (dataBase.get(i).isModerator()) {
-                            fw.write("true");
-                        } else {
-                            fw.write("false");
-                        }
-                    }
-                    fw.close();
-                    exit = true;
-                    return exit;
-                } else {
-                    exit = true;
-                    return exit;
-                }
-            } else {
-                return exit;
-            }
-        } catch (IOException a) {
-            a.printStackTrace();
-        }
-        return exit;
-    }
-
-    private void menu() {
+    private void mainMenu()
+    {
+        boolean loggedUser=false;
         boolean exit = false;
-        File info = new File("database.txt");
-        while (!exit) {
-            System.out.println("//    1.REGISTRATION\n//    2.LOG IN\n//    3.SHOW USERS\n//    4.EXIT");
-            String check = scan.nextLine();
-            switch (check) {
-                case "1" -> registration();
-                case "2"-> logIn();
-                case "3" -> userList();
-                case "4" -> exit = shutDown(exit, info);
-                default -> System.out.println("ERROR");
-            }
+        while (!exit)
+        {
+           if (loggedUser)
+           {
+               if (dataBase.get(userI).isAdmin())
+               {
+                   System.out.println("\n      ADMIN MENU");
+                   System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW INFO\n//    4.LOG OUT");
+                   String check = scan.nextLine();
+                   switch (check) {
+                       case "1" -> registration(loggedUser);
+                       case "2" -> logIn(loggedUser);
+                       case "3" -> userList();
+                       case "4" -> loggedUser = false;
+                       default -> System.out.println("ERROR");
+                   }
+               }
+               else
+               {
+                   System.out.println("\n      LOGGED MENU");
+                   System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW USERS\n//    4.LOG OUT");
+                   String check = scan.nextLine();
+                   switch (check) {
+                       case "1" -> registration(loggedUser);
+                       case "2" -> logIn(loggedUser);
+                       case "3" -> userList();
+                       case "4" -> loggedUser = false;
+                       default -> System.out.println("ERROR");
+                   }
+               }
+           }
+           else
+           {
+               System.out.println("\n      MENU");
+               System.out.println("//    1.REGISTRATION\n//    2.LOG IN\n//    3.SHOW USERS\n//    4.EXIT");
+               String check = scan.nextLine();
+               switch (check) {
+                   case "1" -> registration(loggedUser);
+                   case "2" -> logIn(loggedUser);
+                   case "3" -> userList();
+                   case "4" -> exit = false;
+                   default -> System.out.println("ERROR");
+               }
+           }
+        }
+    }
+    private void userListA(int userI)
+    {
+        for (int i = 0; i < dataBase.size(); i++) {
+            System.out.print("/ User Name: " + dataBase.get(i).getUserName());
+            System.out.print("/ Password: " + dataBase.get(i).getPassword());
+            System.out.print("/ Email: " + dataBase.get(i).getEmail());
+            System.out.print("/ Birth Date: " + dataBase.get(i).getBirthDate());
+            System.out.print("/ Phone Number: " + dataBase.get(i).getPhoneNumber());
+            System.out.print("/ Moderator: " + dataBase.get(i).isModerator());
+            System.out.print("/ Admin: " + dataBase.get(i).isAdmin());
+            System.out.println("----------------------------------------------");
         }
     }
 }
