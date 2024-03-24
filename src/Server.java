@@ -5,6 +5,13 @@ public class Server {
         mainMenu();
     }
 
+    public boolean isLogged() {
+        return isLogged;
+    }
+
+    private boolean isLogged;
+    private User loggedUser;
+
     static Scanner scan = new Scanner(System.in);
     private ArrayList<User> dataBase = new ArrayList<>();
 
@@ -38,7 +45,7 @@ public class Server {
         }
     }
 
-    private void registration(boolean loggedUser) {
+    private void registration() {
         String userName;
         String password;
         boolean isAdmin = false;
@@ -96,7 +103,7 @@ public class Server {
             dataBase.add(user);
         } else {
             System.out.println("user is already registered");
-            logIn(userName,loggedUser);
+            logIn(userName);
         }
     }
 
@@ -150,11 +157,11 @@ public class Server {
                 }
             }
         }
-        User user = new User(userName, password, isAdmin, isModerator, email, birthdate, phoneNumber);
+        User user = new User(userName, password, isAdmin, isModerator, email, birthdate,phoneNumber);
         dataBase.add(user);
     }
 
-    private void logIn(boolean loggedUser) {
+    private void logIn() {
         String userName;
         String password;
         int userIndex;
@@ -166,7 +173,7 @@ public class Server {
             password = scan.nextLine();
             if (dataBase.get(userIndex).getPassword().equals(password)) {
                 System.out.println("your welcome "+ userName);
-                loggedUser=true;
+                loggedUser=dataBase.get(userIndex);                //TO DO: fix the logged changes
             } else {
                 System.out.println("password incorrect");
             }
@@ -181,7 +188,7 @@ public class Server {
         }
     }
 
-    private void logIn(String userName,boolean loggedUser) {
+    private void logIn(String userName) {
         String password;
         int userIndex;
         userIndex = DataBaseUtil.findUser(dataBase, userName);
@@ -189,7 +196,7 @@ public class Server {
         password = scan.nextLine();
         if (dataBase.get(userIndex).getPassword().equals(password)) {
             System.out.println("your welcome "+ userName);
-            loggedUser=true;
+            loggedUser=dataBase.get(userIndex);                //TO DO: fix the logged changes
         } else {
             System.out.println("password incorrect");
         }
@@ -264,22 +271,22 @@ public class Server {
     }
     private void mainMenu()
     {
-        boolean loggedUser=false;
         boolean exit = false;
+        int index=DataBaseUtil.isLogged(dataBase);
         while (!exit)
         {
-           if (loggedUser)
+           if (index==-1)
            {
-               if (dataBase.get(userI).isAdmin())
+               if (dataBase.get(index).isAdmin())
                {
                    System.out.println("\n      ADMIN MENU");
                    System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW INFO\n//    4.LOG OUT");
                    String check = scan.nextLine();
                    switch (check) {
-                       case "1" -> registration(loggedUser);
-                       case "2" -> logIn(loggedUser);
+                       case "1" -> registration();
+                       case "2" -> logIn();
                        case "3" -> userList();
-                       case "4" -> loggedUser = false;
+                       case "4" -> loggedUser = null;                        //TO DO: fix the logged changes
                        default -> System.out.println("ERROR");
                    }
                }
@@ -289,10 +296,10 @@ public class Server {
                    System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW USERS\n//    4.LOG OUT");
                    String check = scan.nextLine();
                    switch (check) {
-                       case "1" -> registration(loggedUser);
-                       case "2" -> logIn(loggedUser);
+                       case "1" -> registration();
+                       case "2" -> logIn();
                        case "3" -> userList();
-                       case "4" -> loggedUser = false;
+                       case "4" -> loggedUser = null;                        //TO DO: fix the logged changes
                        default -> System.out.println("ERROR");
                    }
                }
@@ -303,8 +310,8 @@ public class Server {
                System.out.println("//    1.REGISTRATION\n//    2.LOG IN\n//    3.SHOW USERS\n//    4.EXIT");
                String check = scan.nextLine();
                switch (check) {
-                   case "1" -> registration(loggedUser);
-                   case "2" -> logIn(loggedUser);
+                   case "1" -> registration();
+                   case "2" -> logIn();
                    case "3" -> userList();
                    case "4" -> exit = false;
                    default -> System.out.println("ERROR");
@@ -325,4 +332,5 @@ public class Server {
             System.out.println("----------------------------------------------");
         }
     }
+
 }

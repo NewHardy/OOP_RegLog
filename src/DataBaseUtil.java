@@ -39,5 +39,16 @@ public class DataBaseUtil
             return enterPaswd();
         }
     }
+    static int isLogged (ArrayList<User> dataBase)
+    {
+        for (int i = 0; i < dataBase.size(); i++)
+        {
+            if (dataBase.get(i).isAdmin()==true)
+            {
+                return i ;
+            }
+        }
+        return -1;
+    }
 
 }
