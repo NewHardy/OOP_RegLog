@@ -64,6 +64,7 @@ public class Server {
                     isAdmin = true;
                     System.out.println("User " + userName + " was registered as Admin");
                 } else if ("n".equals(answ)) {
+
                     System.out.println("User " + userName + " was registered");
                 } else {
                     System.out.println("input error");
@@ -157,7 +158,7 @@ public class Server {
                 }
             }
         }
-        User user = new User(userName, password, isAdmin, isModerator, email, birthdate,phoneNumber);
+        User user = new User(userName, password, isAdmin, isModerator, email, birthdate, phoneNumber);
         dataBase.add(user);
     }
 
@@ -172,8 +173,8 @@ public class Server {
             System.out.println("introduce " + userName + "'s password");
             password = scan.nextLine();
             if (dataBase.get(userIndex).getPassword().equals(password)) {
-                System.out.println("your welcome "+ userName);
-                loggedUser=dataBase.get(userIndex);                //TO DO: fix the logged changes
+                System.out.println("your welcome " + userName);
+                loggedUser = dataBase.get(userIndex);                //TO DO: fix the logged changes
             } else {
                 System.out.println("password incorrect");
             }
@@ -195,8 +196,8 @@ public class Server {
         System.out.println("introduce " + userName + "'s password");
         password = scan.nextLine();
         if (dataBase.get(userIndex).getPassword().equals(password)) {
-            System.out.println("your welcome "+ userName);
-            loggedUser=dataBase.get(userIndex);                //TO DO: fix the logged changes
+            System.out.println("your welcome " + userName);
+            loggedUser = dataBase.get(userIndex);                //TO DO: fix the logged changes
         } else {
             System.out.println("password incorrect");
         }
@@ -269,58 +270,51 @@ public class Server {
             System.out.println("INPUT ERROR");
         }
     }
-    private void mainMenu()
-    {
+
+    private void mainMenu() {
         boolean exit = false;
-        int index=DataBaseUtil.isLogged(dataBase);
-        while (!exit)
-        {
-           if (index==-1)
-           {
-               if (dataBase.get(index).isAdmin())
-               {
-                   System.out.println("\n      ADMIN MENU");
-                   System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW INFO\n//    4.LOG OUT");
-                   String check = scan.nextLine();
-                   switch (check) {
-                       case "1" -> registration();
-                       case "2" -> logIn();
-                       case "3" -> userList();
-                       case "4" -> loggedUser = null;                        //TO DO: fix the logged changes
-                       default -> System.out.println("ERROR");
-                   }
-               }
-               else
-               {
-                   System.out.println("\n      LOGGED MENU");
-                   System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW USERS\n//    4.LOG OUT");
-                   String check = scan.nextLine();
-                   switch (check) {
-                       case "1" -> registration();
-                       case "2" -> logIn();
-                       case "3" -> userList();
-                       case "4" -> loggedUser = null;                        //TO DO: fix the logged changes
-                       default -> System.out.println("ERROR");
-                   }
-               }
-           }
-           else
-           {
-               System.out.println("\n      MENU");
-               System.out.println("//    1.REGISTRATION\n//    2.LOG IN\n//    3.SHOW USERS\n//    4.EXIT");
-               String check = scan.nextLine();
-               switch (check) {
-                   case "1" -> registration();
-                   case "2" -> logIn();
-                   case "3" -> userList();
-                   case "4" -> exit = false;
-                   default -> System.out.println("ERROR");
-               }
-           }
+        int index = DataBaseUtil.isLogged(dataBase);
+        while (!exit) {
+            if (index == -1) {
+                if (dataBase.get(index).isAdmin()) {
+                    System.out.println("\n      ADMIN MENU");
+                    System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW INFO\n//    4.LOG OUT");
+                    String check = scan.nextLine();
+                    switch (check) {
+                        case "1" -> registration();
+                        case "2" -> logIn();
+                        case "3" -> userList();
+                        case "4" -> loggedUser = null;                        //TO DO: fix the logged changes
+                        default -> System.out.println("ERROR");
+                    }
+                } else {
+                    System.out.println("\n      LOGGED MENU");
+                    System.out.println("//    1.REGISTRATION\n//    2.SEND E-MAIL\n//    3.SHOW USERS\n//    4.LOG OUT");
+                    String check = scan.nextLine();
+                    switch (check) {
+                        case "1" -> registration();
+                        case "2" -> logIn();
+                        case "3" -> userList();
+                        case "4" -> loggedUser = null;                        //TO DO: fix the logged changes
+                        default -> System.out.println("ERROR");
+                    }
+                }
+            } else {
+                System.out.println("\n      MENU");
+                System.out.println("//    1.REGISTRATION\n//    2.LOG IN\n//    3.SHOW USERS\n//    4.EXIT");
+                String check = scan.nextLine();
+                switch (check) {
+                    case "1" -> registration();
+                    case "2" -> logIn();
+                    case "3" -> userList();
+                    case "4" -> exit = false;
+                    default -> System.out.println("ERROR");
+                }
+            }
         }
     }
-    private void userListA(int userI)
-    {
+
+    private void userListA(int userI) {
         for (int i = 0; i < dataBase.size(); i++) {
             System.out.print("/ User Name: " + dataBase.get(i).getUserName());
             System.out.print("/ Password: " + dataBase.get(i).getPassword());
@@ -332,5 +326,4 @@ public class Server {
             System.out.println("----------------------------------------------");
         }
     }
-
 }
