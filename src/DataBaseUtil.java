@@ -1,9 +1,12 @@
+import User.User;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class DataBaseUtil
 {
-    static int findUser(ArrayList<User> dataBase,String userName)
+    static int findUser(List<User> dataBase, String userName)
     {
         for (int i = 0; i <dataBase.size() ; i++)
         {
@@ -13,17 +16,6 @@ public class DataBaseUtil
             }
         }
         return-1;
-    }
-    static boolean findAdmin(ArrayList<User> dataBase)
-    {
-        for (User user : dataBase)
-        {
-            if (user.isAdmin())
-            {
-                return true;
-            }
-        }
-        return false;
     }
     static String enterPaswd ()
     {
@@ -43,7 +35,7 @@ public class DataBaseUtil
     {
         for (int i = 0; i < dataBase.size(); i++)
         {
-            if (dataBase.get(i).isAdmin()==true)
+            if (dataBase.get(i).getRole().equals("Admin"))
             {
                 return i ;
             }
