@@ -27,7 +27,10 @@ public class InputTools
         {
             o.printStackTrace();
         }
-        list.get(0).setRole("Admin");
+        if (list.size()>0)
+        {
+            list.get(0).setRole("Admin");
+        }
         return list;
     }
 }

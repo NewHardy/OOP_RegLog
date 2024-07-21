@@ -1,5 +1,7 @@
 package User;
 
+import java.io.StringReader;
+
 public class User
 {
     private String userName;
@@ -8,6 +10,7 @@ public class User
     private String email;
     private String birthDate;
     private String phoneNumber;
+    private boolean readMessages;
     public User(String userName,String password,String role,String email, String birthDate, String phoneNumber)
     {
         this.userName=userName;
@@ -22,6 +25,7 @@ public class User
         this.userName = userName;
         this.password = password;
         this.role="User";
+        this.readMessages=false;
     }
 
     public String getUserName() {
@@ -62,5 +66,12 @@ public class User
     public void setRole(String role)
     {
         this.role=role;
+    }
+    public boolean getReadMessages() {
+        return readMessages;
+    }
+    public void setReadMessages(boolean readMessages)
+    {
+        this.readMessages=readMessages;
     }
 }

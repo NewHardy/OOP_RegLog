@@ -1,14 +1,14 @@
 import IOTools.InputTools;
 import IOTools.OutputTools;
 import User.User;
+import User.Email;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class NewServer {
     private User loggedUser;
     private List<User> dataBase = new ArrayList<>();
+
     Scanner scan = new Scanner(System.in);
     {dataBase=InputTools.fileToList();}
 
@@ -17,13 +17,12 @@ public class NewServer {
 
         if (loggedUser==null)
         {
-            System.out.println("MAIN MENU\n1.Registration\n2.LogIn\n3.User Edit\n4.EXIT");
+            System.out.println("MAIN MENU\n1.Registration\n2.LogIn\n3.Exit");
             String str = scan.nextLine();
             switch (str) {
                 case "1" -> registration();
                 case "2" -> logIn();
-                case "3" -> userServer();
-                case "4" -> serverExit();
+                case "3" -> serverExit();
                 default -> {
                     inputError();
                     startMenu();
@@ -35,8 +34,52 @@ public class NewServer {
             switch (loggedUser.getRole())
             {
                 case"Admin"-> adminMenu();
-                case"Mod"-> System.out.println("work in progress");
-                case"User"->startMenu();
+                case"Mod"-> modMenu();
+                case"User"->loggedMenu();
+            }
+        }
+    }
+    private void loggedMenu()
+    {
+        System.out.println("USER MENU\n1.Change Info\n2.Email\n3.LOG OUT");
+        String str = scan.nextLine();
+        switch (str) {
+            case "1" -> userServer();
+            case "2" -> emailMenu();
+            case "3" -> logOut();
+            default -> {
+                inputError();
+                loggedMenu();
+            }
+        }
+    }
+    private void emailMenu()
+    {
+        System.out.println("EMAIl MENU\n1.Send Email\n2.Received messages\n3.Exit");
+        String str = scan.nextLine();
+        String email=loggedUser.getEmail();
+        switch (str) {
+            case "1" -> Email.sendMail(email);
+            case "2" -> Email.messageData(email);
+            case "3"->startMenu();
+            default -> {
+                inputError();
+                emailMenu();
+            }
+        }
+    }
+    private void modMenu()
+    {
+        System.out.println("MOD MENU\n1.UserList\n2.BanUser\n3.Email\n4.LogOut");
+        String str = scan.nextLine();
+        switch (str) {
+            case "1" -> modUserList();
+            case "2" -> banUser();
+            case "3"->emailMenu();
+            case "4" -> logOut();
+            default -> {
+                inputError();
+                modMenu();
             }
         }
     }
@@ -65,7 +108,7 @@ public class NewServer {
     }
 
     private String email() {
-        System.out.println("Introduce your email");
+        System.out.println("Introduce email");
         String email = scan.nextLine();
         if (email.matches("\\S{2,}[@]\\S{2,}[.]\\S{2,3}")) {
             return email;
@@ -75,7 +118,7 @@ public class NewServer {
     }
 
     private String birthDate() {
-        System.out.println("Enter your birth date\n Must be in this format: xx/xx/xxxx");
+        System.out.println("Enter birth date\n Must be in this format: xx/xx/xxxx");
         String birthdate = scan.nextLine();
         if (birthdate.matches("\\d{2}[/]\\d{2}[/]\\d{4}")) {
             return birthdate;
@@ -127,44 +170,51 @@ public class NewServer {
         if (userIndex == -1) {
             registration(userName);
         } else {
-            System.out.printf("That username is in use, want to log in with %s ? y/n", userName);
+            System.out.printf("That username is in use, want to log in with %s ? y/n \n",userName);
             String choice = scan.nextLine();
-            if (choice.equals("y")) {
+            if (choice.equalsIgnoreCase("y")) {
                 logIn(userName,userIndex);
+            } else if (choice.equalsIgnoreCase("n")) {
+                System.out.println("operation cancelled");
             } else {
                 System.out.println("Returning to menu");
-                startMenu();
             }
+            startMenu();
         }
     }
 
     private void registration(String userName) {
-        String role="";
         String password = DataBaseUtil.enterPaswd();
-        String email = email();
-        String birthdate = birthDate();
-        String phoneNumber = phoneNumber();
-        adminReg(userName,role);
+//        String email = email();
+//        String birthdate = birthDate();
+//        String phoneNumber = phoneNumber();
         User user = new User(userName, password);
+        if (loggedUser.getRole().equals("Admin"))
+        {
+            user.setRole(roleSelect());
+        }
         dataBase.add(user);
         startMenu();
     }
 
-    private void adminReg(String userName, String role) {
-        System.out.println("Do you want to register as Admin or Mod?  A/M");
+    private String roleSelect() {
+        System.out.println("Do you want to register as User or Mod?  U/M");
+        String role;
         String answ = scan.nextLine();
-        if ("a".equals(answ))
+        if ("u".equalsIgnoreCase(answ))
         {
-            role="Admin";
+            role="User";
         }
-        else if ("m".equals(answ))
+        else if ("m".equalsIgnoreCase(answ))
         {
             role="Mod";
         }
         else
         {
             role="User";
+            System.out.println("registered as user");
         }
+        return role;
     }
     private void passEnt(String userName, int userIndex) {
         System.out.printf("Introduce %s's password\n", userName);
@@ -201,6 +251,14 @@ public class NewServer {
         for (int i = 0; i < dataBase.size(); i++) {
             System.out.print("/ User.User Name: " + dataBase.get(i).getUserName());
             System.out.print("/ Password: " + dataBase.get(i).getPassword());
+            System.out.print("/ Role: " + dataBase.get(i).getRole());
+            System.out.println("----------------------------------------------");
+        }
+    }
+    private void modUserList()
+    {
+        for (int i = 0; i < dataBase.size(); i++) {
+            System.out.print("/ User.User Name: " + dataBase.get(i).getUserName());
             System.out.print("/ Role: " + dataBase.get(i).getRole());
             System.out.println("----------------------------------------------");
         }
