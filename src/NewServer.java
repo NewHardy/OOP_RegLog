@@ -1,12 +1,14 @@
 import IOTools.InputTools;
 import IOTools.OutputTools;
 import User.User;
-import User.Email;
-
-import java.util.*;
+import User.*;
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 public class NewServer {
     private User loggedUser;
+    private Email email = new Email(User);
     private List<User> dataBase = new ArrayList<>();
 
     Scanner scan = new Scanner(System.in);
@@ -59,8 +61,8 @@ public class NewServer {
         String str = scan.nextLine();
         String email=loggedUser.getEmail();
         switch (str) {
-            case "1" -> Email.sendMail(email);
-            case "2" -> Email.messageData(email);
+            case "1" ->
+            case "2" ->
             case "3"->startMenu();
             default -> {
                 inputError();
