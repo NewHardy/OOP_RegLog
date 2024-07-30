@@ -29,8 +29,9 @@ public class OutputTools
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH) )){
             oos.writeObject(dataBase);
         }
-        catch (Exception ex){
-            ex.printStackTrace();
+        catch (Exception ex)
+        {
+            System.out.println("error, database is not saved");
         }
     }
 }

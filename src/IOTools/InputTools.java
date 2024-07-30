@@ -40,7 +40,7 @@ public class InputTools
             dataBase = (ArrayList<User>) ois.readObject();
         }
         catch (Exception ex){
-            System.out.println("Error");
+            System.out.println("Error, database has not loaded");
             dataBase = new ArrayList<>();
         }
         return dataBase;
