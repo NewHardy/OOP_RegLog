@@ -2,17 +2,18 @@ import IOTools.InputTools;
 import IOTools.OutputTools;
 import User.User;
 import User.*;
+
+
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 
 public class NewServer {
     private User loggedUser;
-    private Email email = new Email(User);
-    private List<User> dataBase = new ArrayList<>();
+    private ArrayList<User> dataBase = new ArrayList<>();
 
     Scanner scan = new Scanner(System.in);
-    {dataBase=InputTools.fileToList();}
+    {dataBase=InputTools.deserializationBase();}
 
     public void startMenu()
     {
@@ -61,14 +62,14 @@ public class NewServer {
         String str = scan.nextLine();
         String email=loggedUser.getEmail();
         switch (str) {
-            case "1" ->
-            case "2" ->
+            case "1" ->sendEmail();
+            case "2" ->emailServer();
             case "3"->startMenu();
             default -> {
                 inputError();
-                emailMenu();
             }
         }
+        emailMenu();
     }
     private void modMenu()
     {
@@ -106,7 +107,7 @@ public class NewServer {
 
     private void serverExit() {
         System.out.println("Server is shutting down");
-        OutputTools.listToFile(dataBase);
+        OutputTools.serializationBase((ArrayList<User>) dataBase);
     }
 
     private String email() {
@@ -191,11 +192,11 @@ public class NewServer {
 //        String birthdate = birthDate();
 //        String phoneNumber = phoneNumber();
         User user = new User(userName, password);
-        if (loggedUser.getRole().equals("Admin"))
+        dataBase.add(user);
+        if (loggedUser!=null&&loggedUser.getRole().equals("Admin"))
         {
             user.setRole(roleSelect());
         }
-        dataBase.add(user);
         startMenu();
     }
 
@@ -235,13 +236,14 @@ public class NewServer {
     }
     private void adminServer()
     {
-        System.out.println("ADMIN SERVER\n1.UserList\n2.Change Role\n3.Ban User\n4.Exit");
+        System.out.println("ADMIN SERVER\n1.UserList\n2.Change Role\n3.Ban User\n4.Email Menu\n5.EXIT");
         String str = scan.nextLine();
         switch (str) {
             case "1" -> userList();
             case "2" -> difRole();
             case "3" -> banUser();
-            case "4" -> adminMenu();
+            case "4" -> emailMenu();
+            case "5" -> adminMenu();
             default -> {
                 inputError();
                 adminServer();
@@ -338,6 +340,32 @@ public class NewServer {
                 startMenu();
             }
             default -> inputError();
+        }
+    }
+    public void sendEmail()
+    {
+        System.out.println("who you want to email (userName)");
+        String reciver=scan.nextLine();
+        int userIndex= DataBaseUtil.findUser(dataBase,reciver);
+        if (userIndex!=-1)
+        {
+            System.out.println("write the email");
+            String emailTxt=scan.nextLine();
+            System.out.println("email sent");
+            Email email = new Email(loggedUser.getUserName(),reciver,emailTxt);
+            dataBase.get(userIndex).addMail(email);
+        }
+        else
+        {
+            System.out.println("user not found");
+        }
+    }
+    public void emailServer()
+    {
+        System.out.println("YOUR MAILBOX");
+        for (Email email : loggedUser.getMailBox())
+        {
+            System.out.println(email);
         }
     }
 }

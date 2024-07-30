@@ -1,13 +1,13 @@
 package IOTools;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import User.User;
 
 public class OutputTools
 {
+    private static final String FILE_PATH="src/Storage/database.dat";
     public static void listToFile(List<User>list)
     {
        File file= new File("database.txt");
@@ -24,5 +24,13 @@ public class OutputTools
        {
            exception.printStackTrace();
        }
+    }
+    public static void serializationBase(ArrayList<User> dataBase){
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH) )){
+            oos.writeObject(dataBase);
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 }

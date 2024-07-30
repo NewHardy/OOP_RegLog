@@ -1,6 +1,7 @@
 package User;
 
 import java.io.StringReader;
+import java.util.LinkedList;
 
 public class User
 {
@@ -10,6 +11,7 @@ public class User
     private String email;
     private String birthDate;
     private String phoneNumber;
+    private LinkedList<Email> mailBox=new LinkedList<>();
     public User(String userName,String password,String role,String email, String birthDate, String phoneNumber)
     {
         this.userName=userName;
@@ -61,8 +63,16 @@ public class User
     {
         this.phoneNumber=phoneNumber;
     }
+    public void addMail(Email email)
+    {
+        this.mailBox.add(email);
+    }
     public void setRole(String role)
     {
         this.role=role;
+    }
+    public LinkedList<Email> getMailBox()
+    {
+        return mailBox;
     }
 }
